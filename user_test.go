@@ -17,20 +17,21 @@ func TestNewUser(t *testing.T) {
 	// c
 	u1 := rr0.NewUser(1, "u1", nil)
 	// r
+	u1.grant(rs)
 	fmt.Println("c u1: ", u1, u1.permit(p1))
-	for _, role := range u1.roles {
+	for _, role := range u1.roleMap {
 		fmt.Println("r u1 role ", role.name)
 	}
 	// u d
 	u1.grant(rs)
-	for _, role := range u1.roles {
+	for _, role := range u1.roleMap {
 		fmt.Println("r u u1 role ", role.name)
 	}
 	r2 := rr0.NewRole("r0", ps0)
 	u1.revoke(r2)
-	for _, role := range u1.roles {
+	for _, role := range u1.roleMap {
 		fmt.Println("r d u1 role ", role.name)
 	}
-	fmt.Println("last,", u1.roles)
+	fmt.Println("last,", u1.roleMap)
 	fmt.Println("u0: ", u1, u1.permit(p1))
 }

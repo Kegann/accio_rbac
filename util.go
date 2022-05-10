@@ -16,9 +16,9 @@ func (role *Role) removeNode(node *bLinkedNode) {
 	delete(role.permissionMap, node.permission.name)
 }
 
-func (role *Role) add2Head(node *bLinkedNode) {
-	node.prev = role.head
-	node.next = role.head.next
-	role.head.next.prev = node
-	role.head.next = node
-}
+//func (role *Role) add2Head(node *bLinkedNode) {
+//	node.prev = role.head
+//	node.next = role.head.next
+//	role.head.next.prev = node
+//	role.head.next = node
+//}
