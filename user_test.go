@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewUser(t *testing.T) {
-	rr0 := Rbac{}
+	rr0 := Rbac{users: map[int64]*User{}, roles: map[string]*Role{}, permissions: map[string]*Permission{}}
 	p0 := rr0.NewPermission("p0")
 	p1 := rr0.NewPermission("p1")
 	ps0 := []*Permission{p0}
@@ -19,19 +19,19 @@ func TestNewUser(t *testing.T) {
 	// r
 	u1.grant(rs)
 	fmt.Println("c u1: ", u1, u1.permit(p1))
-	for _, role := range u1.roleMap {
-		fmt.Println("r u1 role ", role.name)
+	for _, role := range u1.RoleMap {
+		fmt.Println("r u1 role ", role.Name)
 	}
 	// u d
 	u1.grant(rs)
-	for _, role := range u1.roleMap {
-		fmt.Println("r u u1 role ", role.name)
+	for _, role := range u1.RoleMap {
+		fmt.Println("r u u1 role ", role.Name)
 	}
 	r2 := rr0.NewRole("r0", ps0)
 	u1.revoke(r2)
-	for _, role := range u1.roleMap {
-		fmt.Println("r d u1 role ", role.name)
+	for _, role := range u1.RoleMap {
+		fmt.Println("r d u1 role ", role.Name)
 	}
-	fmt.Println("last,", u1.roleMap)
+	fmt.Println("last,", u1.RoleMap)
 	fmt.Println("u0: ", u1, u1.permit(p1))
 }

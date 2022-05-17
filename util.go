@@ -13,7 +13,7 @@ func initbLinkNode(val *Permission) *bLinkedNode {
 func (role *Role) removeNode(node *bLinkedNode) {
 	node.prev.next = node.next
 	node.next.prev = node.prev
-	delete(role.permissionMap, node.permission.name)
+	delete(role.PermissionMap, node.permission.Name)
 }
 
 //func (role *Role) add2Head(node *bLinkedNode) {

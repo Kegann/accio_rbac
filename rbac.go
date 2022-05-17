@@ -1,9 +1,9 @@
 package src
 
 type Rbac struct {
-	users []*User
-	permissions []*Permission
-	roles []*Role
+	users map[int64]*User
+	permissions map[string]*Permission
+	roles map[string]*Role
 }
 
 type Rbaci interface {

@@ -1,38 +1,55 @@
 package src
 
+import (
+	"encoding/json"
+)
+
 type User struct {
-	id    int64
-	name  string
+	Id    int64 `json:"userid"`
+	Name  string `json:"username"`
 	//roles []*Role
-	roleMap map[string]*Role
+	RoleMap map[string]*Role
 }
 
+// create a new user
 func (r *Rbac)NewUser(id int64, name string, roles []*Role) *User {
-	new_user := &User{id: id, name: name}
-	new_user.roleMap = map[string]*Role{}
-	for _, role := range roles {
-		new_user.roleMap[role.name] = role
+	if _, ok := r.users[id]; ok {
+		return nil
 	}
-	r.users = append(r.users, new_user)
+	new_user := &User{Id: id, Name: name}
+	new_user.RoleMap = map[string]*Role{}
+	for _, role := range roles {
+		new_user.RoleMap[role.Name] = role
+	}
+	r.users[id] = new_user
 	return new_user
 }
 
-/*func (user *User) loads () error {
-}*/
+func (r *Rbac) loads (src string) error {
+	u := new(User)
+	err := json.Unmarshal([]byte(src), u)
+	if err != nil {
+		return err
+	}
+	r.users[u.Id] = u
+	return nil
+}
+
 
 func (user *User) grant(roles []*Role) {
 	//user.roles = roles
 	for _, role := range roles {
-		if _, ok := user.roleMap[role.name]; ok {
+		if _, ok := user.RoleMap[role.Name]; ok {
 			continue
 		}
-		user.roleMap[role.name] = role
+		user.RoleMap[role.Name] = role
 	}
 	return
 }
 
+// check if user has the permission
 func (user *User) permit(permission *Permission) bool {
-	for _, role := range user.roleMap {
+	for _, role := range user.RoleMap {
 		if ok := role.permit(permission); ok {
 			return true
 		}
@@ -40,10 +57,11 @@ func (user *User) permit(permission *Permission) bool {
 	return false
 }
 
+// delete user's role
 func (user *User) revoke(revoke_role *Role) {
-	if _, ok := user.roleMap[revoke_role.name]; !ok {
+	if _, ok := user.RoleMap[revoke_role.Name]; !ok {
 		return
 	}
-	delete(user.roleMap, revoke_role.name)
+	delete(user.RoleMap, revoke_role.Name)
 	return
 }
