@@ -25,17 +25,24 @@ func (r *Rbac)NewUser(id int64, name string, roles []*Role) *User {
 	return new_user
 }
 
-func (r *Rbac) loads (src string) error {
+// load users from json str
+func (r *Rbac) LoadUser (src string) (error, *User) {
 	u := new(User)
 	err := json.Unmarshal([]byte(src), u)
 	if err != nil {
-		return err
+		return err, nil
+	}
+	if _, ok := r.users[u.Id]; ok {
+		return nil, nil
+	}
+	if u.RoleMap == nil {
+		u.RoleMap = map[string]*Role{}
 	}
 	r.users[u.Id] = u
-	return nil
+	return nil, u
 }
 
-
+// grant user a role
 func (user *User) grant(roles []*Role) {
 	//user.roles = roles
 	for _, role := range roles {

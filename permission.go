@@ -1,6 +1,7 @@
 package src
 
 type Permission struct{
+	// todo autoincr id?
 	Name string
 }
 

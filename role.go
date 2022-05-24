@@ -1,9 +1,15 @@
 package src
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 type Role struct {
+	// todo autoincr id?
 	Name        string
 	//permissions []*Permission
-	PermissionMap map[string]*bLinkedNode
+	PermissionMap map[string]*Permission
 	//head, tail *bLinkedNode
 }
 
@@ -12,7 +18,7 @@ func (r *Rbac) NewRole(name string, permissions []*Permission) *Role {
 	new_role := &Role{
 		Name: name,
 		// permissions: permissions,
-		PermissionMap: map[string]*bLinkedNode{}}
+		PermissionMap: map[string]*Permission{}}
 		//head: initbLinkNode(&Permission{}),
 		//tail: initbLinkNode(&Permission{})}
 	//new_role.head.next = new_role.tail
@@ -35,8 +41,8 @@ func (role *Role) permit(comp_permission *Permission) bool {
 // add a permission for a role
 func (role *Role) assign(new_permission *Permission) {
 	if _, ok := role.PermissionMap[new_permission.Name]; !ok {
-		permissionNode := initbLinkNode(new_permission)
-		role.PermissionMap[new_permission.Name] = permissionNode
+		//permissionNode := initbLinkNode(new_permission)
+		role.PermissionMap[new_permission.Name] = new_permission
 		//role.add2Head(permissionNode)
 	} else {
 		return
@@ -46,6 +52,7 @@ func (role *Role) assign(new_permission *Permission) {
 
 // remove role's permission
 func (role *Role) revoke(revoke_permission *Permission) {
+	fmt.Println("role name: ", revoke_permission.Name)
 	if _, ok := role.PermissionMap[revoke_permission.Name]; !ok {
 		return
 	}
@@ -53,4 +60,24 @@ func (role *Role) revoke(revoke_permission *Permission) {
 	//role.removeNode(node)
 	delete(role.PermissionMap, revoke_permission.Name)
 	return
+}
+
+// load users from json str
+func (r *Rbac) LoadRole (src string) (error, *Role) {
+	role := new(Role)
+	err := json.Unmarshal([]byte(src), role)
+	if err != nil {
+		return err, nil
+	}
+	if _, ok := r.roles[role.Name]; ok {
+		return nil, nil
+	}
+	if role.PermissionMap == nil {
+		role.PermissionMap = map[string]*Permission{}
+	}
+	if _, ok := r.roles[role.Name]; ok {
+		return nil, nil
+	}
+	r.roles[role.Name] = role
+	return nil, role
 }
