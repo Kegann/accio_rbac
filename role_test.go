@@ -12,7 +12,14 @@ func TestNewRole(t *testing.T) {
 	ps := []*Permission{p0, p1}
 	// c
 	r0 := rr0.NewRole("r0", ps)
-	fmt.Println("r0: ", r0)
+	r1str := `{
+		"name": "r1"
+	}`
+	err, r1 := rr0.LoadRole(r1str)
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println("r0, r1: ", r0, r1)
 	// r
 	//permissions := r0.permissions
 	//for idx, permission := range permissions {
@@ -22,10 +29,10 @@ func TestNewRole(t *testing.T) {
 	// u d
 	p2 := rr0.NewPermission("p2")
 	p3 := rr0.NewPermission("p3")
-	r0.assign(p2)
-	fmt.Println("r0: ", r0.PermissionMap, p2, p3)
-	r0.revoke(p3)
-	fmt.Println("r0: ", r0.PermissionMap)
+	r1.assign(p2)
+	fmt.Println("r0: ", r1.PermissionMap, p2, p3)
+	r1.revoke(p3)
+	fmt.Println("r0: ", r1.PermissionMap)
 	//for idx, permission := range r0.permissions {
 	//	fmt.Println("u permission: ", idx, permission.name)
 	//}

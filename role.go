@@ -62,7 +62,7 @@ func (role *Role) revoke(revoke_permission *Permission) {
 	return
 }
 
-// load users from json str
+// load role from json str
 func (r *Rbac) LoadRole (src string) (error, *Role) {
 	role := new(Role)
 	err := json.Unmarshal([]byte(src), role)
